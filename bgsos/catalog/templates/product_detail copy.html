@@ -1,0 +1,16 @@
+<!-- templates/product_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.title }}</title>
+</head>
+<body>
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.description }}</p>
+    <p>Price: {{ product.price }}</p>
+    <p>form action="{% url 'add_to_cart' cart_id=cart.id variant_id=product.variants.0.id qty=1 %}" method="post"</p>
+        {% csrf_token %}
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>

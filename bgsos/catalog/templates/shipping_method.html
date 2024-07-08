@@ -1,0 +1,19 @@
+<!-- templates/select_shipping_method.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Shipping Method</title>
+</head>
+<body>
+    <h1>Select Shipping Method</h1>
+    <form method="post">
+        {% csrf_token %}
+        <select name="option_id">
+            {% for option in shipping_options %}
+            <option value="{{ option.id }}">{{ option.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Select</button>
+    </form>
+</body>
+</html>

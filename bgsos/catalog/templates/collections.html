@@ -1,0 +1,13 @@
+<!-- catalog/templates/collections.html -->
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Collections</h1>
+    <ul>
+        {% for collection in collections %}
+        <li>
+            <a href="{% url 'collection_products' collection.id %}">{{ collection.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

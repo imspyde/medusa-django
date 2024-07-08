@@ -1,0 +1,20 @@
+<!-- templates/cart_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cart Detail</title>
+</head>
+<body>
+    <h1>Cart Detail</h1>
+    <ul>
+        {% for item in cart.line_items %}
+        <li>{{ item.title }} - {{ item.quantity }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'update_shipping' cart.id %}">Update Shipping Details</a>
+    <a href="{% url 'confirm_order' cart.id %}">Confirm Order</a>
+    <a href="{% url 'select_shipping' cart.id %}">Select Shipping Method</a>
+    <a href="{% url 'create_payment_session' cart.id %}">Create Payment Session</a>
+    <a href="{% url 'select_payment_session' cart.id %}">Select Payment Session</a>
+</body>
+</html>
