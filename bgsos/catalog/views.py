@@ -146,7 +146,7 @@ def collections_view(request):
 def collection_products_view(request, collection_id):
     response = get_products(collection_id=collection_id)
     collection = get_collection_name(collection_id)
-    print(collection[])
+    print(collection)
     #products = Product.objects.filter(collection=collection)
     print(response.text)  # Print the raw response text for debugging
     if response.status_code == 200:
