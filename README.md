@@ -37,6 +37,13 @@ def cart_id(request):
 - contains all medusa functions
 - specify proxy details
 
+## .env
+```
+BACKEND_URL=""
+PUBLISHABLE_API_KEY=""
+DEFAULT_REGION_ID=""
+```
+
 ## To Do:
 ### Templates
 Catalog: Main store application
