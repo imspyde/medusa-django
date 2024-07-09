@@ -20,3 +20,33 @@ Note this should be done before creating the env
 
 ## Install socks
 ```pip install 'requests[socks]'```
+
+## Divide prices by 100
+templatetags/custom_filters.py
+
+## Cart Middleware
+creates a cart id and stores in the Django session
+
+## Context processor
+Gets the cart id
+```
+def cart_id(request):
+    return {'cart_id': request.session.get('cart_id')}
+```
+
+## To Do:
+### Templates
+Catalog: Main store application
+- Orders (customer can view orders)
+- Checkout: Address
+- Payments
+- Invoice
+#### Changes
+Improve template for product pages, store, etc.
+- Generic stores the navigation
+
+Root directory
+- Login
+- Logout
+- password reset
+- registration
