@@ -33,6 +33,9 @@ Gets the cart id
 def cart_id(request):
     return {'cart_id': request.session.get('cart_id')}
 ```
+## services/services.py
+- contains all medusa functions
+- specify proxy details
 
 ## To Do:
 ### Templates
@@ -41,6 +44,7 @@ Catalog: Main store application
 - Checkout: Address
 - Payments
 - Invoice
+
 #### Changes
 Improve template for product pages, store, etc.
 - Generic stores the navigation
