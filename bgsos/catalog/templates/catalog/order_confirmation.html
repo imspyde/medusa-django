@@ -1,10 +1,11 @@
-<!-- templates/update_shipping.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Update Shipping</title>
-</head>
-<body>
+<!-- templates/catalog/update_shipping.html -->
+{% extends "base_generic.html" %}
+{% load custom_filters %}
+{% block title %}
+<title>Address</title>
+{% endblock %}
+
+{% block content %}
     <h1>Update Shipping Details</h1>
     <form method="post">
         {% csrf_token %}

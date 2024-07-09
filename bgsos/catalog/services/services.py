@@ -1,5 +1,7 @@
 import requests
 from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException
+
 from urllib3.util.retry import Retry
 from django.conf import settings  # Import settings from Django
 
@@ -36,16 +38,40 @@ session.headers.update({'x-publishable-api-key': publishableApiKey})
 session.proxies.update(proxies)
 
 def create_cart():
-    return session.post(f'{backendUrl}/store/carts')
+    response = session.post(f'{backendUrl}/store/carts')
+    if response.status_code == 200:
+        cart_data = response.json()
+        cart = cart_data.get('cart')
+        if cart:
+            return cart
+        else:
+            raise Exception("Cart creation failed, no cart data returned")
+    else:
+        raise Exception(f"Failed to create cart: {response.status_code}, {response.text}")
 
 def add_to_cart(cart_id, variant_id, qty):
     return session.post(f'{backendUrl}/store/carts/{cart_id}/line-items', json={'variant_id': variant_id, 'quantity': qty})
+
+def update_line_item(cart_id, line_id, quantity):
+    url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
+    response = session.post(url, json={"quantity": quantity})
+    response.raise_for_status()
+    return response.json()
 
 def remove_from_cart(cart_id, item_id):
     return session.delete(f'{backendUrl}/store/carts/{cart_id}/line-items/{item_id}')
 
 def get_cart_detail(cart_id):
     return session.get(f'{backendUrl}/store/carts/{cart_id}')
+
+def update_line_item(cart_id, line_id, quantity):
+    url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
+    response = session.post(url, json={"quantity": quantity})
+    response.raise_for_status()
+    return response.json()
+
+def update_cart(cart_id, data):
+    return session.post(f'{backendUrl}/store/carts/{cart_id}', json=data)
 
 def get_products(product_id=None, collection_id=None):
     if product_id:
@@ -80,7 +106,21 @@ def update_shipping_details(cart_id, data):
     })
 
 def confirm_order(cart_id):
-    return session.post(f'{backendUrl}/store/carts/{cart_id}/complete')
+    try:
+        response = session.post(f'{backendUrl}/store/carts/{cart_id}/complete')
+        response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
+        return response
+    except RequestException as e:
+        return {
+            'status_code': e.response.status_code if e.response else 500,
+            'error': str(e)
+        }
+def update_line_item(cart_id, line_id, quantity):
+    url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
+    response = session.post(url, json={"quantity": quantity})
+    response.raise_for_status()
+    print(cart_id, line_id, quantity)
+    return response.json()
 
 def update_cart(cart_id, data):
     return session.post(f'{backendUrl}/store/carts/{cart_id}', json=data)
