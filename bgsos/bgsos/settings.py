@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # bgsos/settings.py
 
 from pathlib import Path
@@ -32,6 +31,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 BACKEND_URL = os.getenv('BACKEND_URL')
 PUBLISHABLE_API_KEY = os.getenv('PUBLISHABLE_API_KEY')
 REGION_ID = os.getenv('REGION_ID')
+USDT_URL = os.getenv('USDT_URL')
+USDT_API_KEY = os.getenv('USDT_API_KEY')
+USDT_IPN = os.getenv('USDT_IPN')
 
 # Add your other settings here
 
@@ -47,7 +49,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -59,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Add our new application
     'catalog',
-    #'catalog.apps.CatalogConfig', # This object was created for us in /catalog/apps.py
+    # 'catalog.apps.CatalogConfig', # This object was created for us in /catalog/apps.py
 ]
 
 MIDDLEWARE = [
@@ -95,7 +96,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bgsos.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -105,7 +105,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -125,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -137,14 +135,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 # The absolute path to the directory where collect static will collect static files for deployment.
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
-
 
 # Static file serving.
 # https://whitenoise.readthedocs.io/en/stable/django.html#add-compression-and-caching-support
@@ -155,11 +151,7 @@ STORAGES = {
     },
 }
 
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-

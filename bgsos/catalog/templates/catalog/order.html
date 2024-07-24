@@ -1,0 +1,107 @@
+{% extends "base_generic.html" %}
+{% load custom_filters %}
+
+{% block title %}Order{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Your Orders</h1>
+
+    {% if orders %}
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th class="text-nowrap">Order #</th>
+            <th class="text-nowrap">Date</th>
+            <th class="text-nowrap">Items</th>
+            <th class="text-nowrap">Shipping Charges</th>
+            <th class="text-nowrap">Total</th>
+            <th class="text-nowrap">Payment Method</th>
+            <th class="text-nowrap">Shipping Address</th>
+            <th class="text-nowrap">Fulfillment Status</th>
+            <th class="text-nowrap">Payment Status</th>
+            <th class="text-nowrap">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.display_id }}</td>
+            <td class="text-nowrap">{{ order.created_at|slice:"0:10" }}</td>
+            <td class="text-nowrap">
+                <ul>
+                    {% for item in order.items %}
+                    <li>
+                        <img src="{{ item.thumbnail }}" alt="{{ item.title }}" style="width: 50px; height: auto;">
+                        {{ item.title }} - {{ item.description }} - {{ item.quantity }} x
+                        {{ item.unit_price|cents_to_dollars|floatformat:2 }} {{ order.currency_code }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="text-nowrap">{{ order.shipping_total|cents_to_dollars|floatformat:2 }} {{ order.currency_code }}
+            </td>
+            <td class="text-nowrap">{{ order.total|cents_to_dollars|floatformat:2 }} {{ order.currency_code }}</td>
+            <td>{{ order.payments.0.provider_id|title }}</td>
+            <td class="text-nowrap">
+                {{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}<br>
+                {{ order.shipping_address.address_1 }}<br>
+                {{ order.shipping_address.city }}, {{ order.shipping_address.province }}
+                {{ order.shipping_address.postal_code }}<br>
+                {{ order.shipping_address.country_code|upper }}
+            </td>
+            <td>{{ order.fulfillment_status }}</td>
+            <td>{{ order.payment_status }}</td>
+            <td>{{ order.status }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if orders.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ orders.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&lsaquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for i in orders.paginator.page_range %}
+            {% if orders.number == i %}
+            <li class="page-item active">
+                <span class="page-link">
+                  {{ i }}
+                  <span class="sr-only">(current)</span>
+                </span>
+            </li>
+            {% elif i > orders.number|add:'-5' and i < orders.number|add:'5' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if orders.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ orders.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&rsaquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ orders.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <p>You have no orders.</p>
+    {% endif %}
+</div>
+{% endblock %}

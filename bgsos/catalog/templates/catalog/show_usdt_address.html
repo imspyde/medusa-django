@@ -1,0 +1,30 @@
+<!-- templates/show_usdt_address.html -->
+{% extends "base_generic.html" %}
+{% load custom_filters %}
+
+{% block title %}
+<title>USDT Payment Address</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h1 class="card-title">Scan the QR Code to Pay with USDT</h1>
+                </div>
+                <div class="card-body">
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="USDT Address QR Code" class="img-fluid mb-3">
+                    <p class="card-text">USDT Address: {{ usdt_address }}</p>
+                    <p class="card-text">Amount: {{ amount }}</p>
+                    <div class="alert alert-warning" role="alert">
+                        Please do not refresh the page. You will lose your QR code, and it is impossible to recover it
+                        again.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

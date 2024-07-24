@@ -11,10 +11,10 @@ publishableApiKey = settings.PUBLISHABLE_API_KEY
 regionId = settings.REGION_ID
 
 # Setting up the SOCKS5 proxy
-proxies = {
-    'http': 'socks5h://127.0.0.1:9050',
-    'https': 'socks5h://127.0.0.1:9050',
-}
+# proxies = {
+#     'http': 'socks5h://127.0.0.1:9050',
+#     'https': 'socks5h://127.0.0.1:9050',
+# }
 
 # Creating a session and configuring it
 session = requests.Session()
@@ -35,7 +35,10 @@ session.mount('https://', adapter)
 
 # Setting default headers and proxy configuration
 session.headers.update({'x-publishable-api-key': publishableApiKey})
-session.proxies.update(proxies)
+
+
+# session.proxies.update(proxies)
+
 
 def create_cart():
     response = session.post(f'{backendUrl}/store/carts')
@@ -49,20 +52,26 @@ def create_cart():
     else:
         raise Exception(f"Failed to create cart: {response.status_code}, {response.text}")
 
+
 def add_to_cart(cart_id, variant_id, qty):
-    return session.post(f'{backendUrl}/store/carts/{cart_id}/line-items', json={'variant_id': variant_id, 'quantity': qty})
+    return session.post(f'{backendUrl}/store/carts/{cart_id}/line-items',
+                        json={'variant_id': variant_id, 'quantity': qty})
+
 
 def update_line_item(cart_id, line_id, quantity):
     url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
     response = session.post(url, json={"quantity": quantity})
     response.raise_for_status()
     return response.json()
+
 
 def remove_from_cart(cart_id, item_id):
     return session.delete(f'{backendUrl}/store/carts/{cart_id}/line-items/{item_id}')
 
+
 def get_cart_detail(cart_id):
     return session.get(f'{backendUrl}/store/carts/{cart_id}')
+
 
 def update_line_item(cart_id, line_id, quantity):
     url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
@@ -70,8 +79,10 @@ def update_line_item(cart_id, line_id, quantity):
     response.raise_for_status()
     return response.json()
 
+
 def update_cart(cart_id, data):
     return session.post(f'{backendUrl}/store/carts/{cart_id}', json=data)
+
 
 def get_products(product_id=None, collection_id=None):
     if product_id:
@@ -81,11 +92,14 @@ def get_products(product_id=None, collection_id=None):
     else:
         return session.get(f'{backendUrl}/store/products')
 
+
 def browse_all_products():
     return session.get(f'{backendUrl}/store/products')
 
+
 def get_collections():
     return session.get(f'{backendUrl}/store/collections')
+
 
 def get_collection_name(id):
     response = session.get(f'{backendUrl}/store/collections/{id}')
@@ -95,48 +109,62 @@ def get_collection_name(id):
     else:
         return None
 
+
 def update_shipping_details(cart_id, data):
-    shipping_address = data
-    billing_address = data
-    shipping_address['country_code'] = 'au'
-    billing_address['country_code'] = 'au'
     return session.post(f'{backendUrl}/store/carts/{cart_id}', json={
-        'shipping_address': shipping_address,
-        'billing_address': billing_address,
+        "shipping_address": {
+            "first_name": data.get('first_name'),
+            "last_name": data.get('last_name'),
+            "address_1": data.get('address_1'),
+            "address_2": data.get('address_2'),
+            "city": data.get('city'),
+            "province": data.get('state'),
+            "postal_code": data.get('postal_code'),
+            "country_code": "au"
+        },
+        "billing_address": {
+            "first_name": data.get('first_name'),
+            "last_name": data.get('last_name'),
+            "address_1": data.get('address_1'),
+            "address_2": data.get('address_2'),
+            "city": data.get('city'),
+            "province": data.get('state'),
+            "postal_code": data.get('postal_code'),
+            "country_code": "au"
+        },
+        "email": data.get('email')
     })
 
+
 def confirm_order(cart_id):
-    try:
-        response = session.post(f'{backendUrl}/store/carts/{cart_id}/complete')
-        response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
-        return response
-    except RequestException as e:
-        return {
-            'status_code': e.response.status_code if e.response else 500,
-            'error': str(e)
-        }
+    return session.post(f'{backendUrl}/store/carts/{cart_id}/complete')
+
+
 def update_line_item(cart_id, line_id, quantity):
     url = f'{backendUrl}/store/carts/{cart_id}/line-items/{line_id}'
     response = session.post(url, json={"quantity": quantity})
     response.raise_for_status()
-    print(cart_id, line_id, quantity)
     return response.json()
+
 
 def update_cart(cart_id, data):
     return session.post(f'{backendUrl}/store/carts/{cart_id}', json=data)
 
+
 def shipping_method(cart_id, option_id):
     return session.post(f'{backendUrl}/store/carts/{cart_id}/shipping-methods', json={'option_id': option_id})
+
 
 def create_payment_session(cart_id):
     return session.post(f'{backendUrl}/store/carts/{cart_id}/payment-sessions')
 
+
 def select_payment_session(cart_id, provider_id):
     return session.post(f'{backendUrl}/store/carts/{cart_id}/payment-session', json={'provider_id': provider_id})
 
-def get_shipping_options():
-    return session.get(f'{backendUrl}/store/shipping-options', params={'region_id': regionId})
 
+def get_shipping_options(cart_id):
+    return session.get(f'{backendUrl}/store/shipping-options/{cart_id}')
 
 
 # New authentication functions
@@ -146,6 +174,7 @@ def get_current_customer(access_token):
         'Authorization': f'Bearer {access_token}',
     }
     return session.get(f'{backendUrl}/store/auth', headers=headers)
+
 
 def customer_login(email, password):
     headers = {
@@ -157,11 +186,13 @@ def customer_login(email, password):
     }
     return session.post(f'{backendUrl}/store/auth', headers=headers, json=data)
 
+
 def customer_logout(access_token):
     headers = {
         'Authorization': f'Bearer {access_token}',
     }
     return session.delete(f'{backendUrl}/store/auth', headers=headers)
+
 
 def login_jwt(email, password):
     headers = {
@@ -173,5 +204,38 @@ def login_jwt(email, password):
     }
     return session.post(f'{backendUrl}/store/auth/token', headers=headers, json=data)
 
+
 def check_email_exists(email):
     return session.get(f'{backendUrl}/store/auth/{email}')
+
+
+def create_customer(data):
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data: data
+    return session.post(f'{backendUrl}/store/customers', headers=headers, json=data)
+
+
+def get_customer_profile(auth_token):
+    headers = {
+        'Authorization': f'Bearer {auth_token}'
+    }
+    return session.get(f'{backendUrl}/store/customers/me', headers=headers)
+
+
+def change_customer_password(auth_token, new_password):
+    headers = {
+        'Authorization': f'Bearer {auth_token}'
+    }
+    data = {
+        'password': new_password
+    }
+    return session.post(f'{backendUrl}/store/customers/me', headers=headers, json=data)
+
+
+def my_orders(auth_token, offset=0, limit=10):
+    headers = {
+        'Authorization': f'Bearer {auth_token}'
+    }
+    return session.get(f'{backendUrl}/store/customers/me/orders?offset={offset}&limit={limit}', headers=headers)

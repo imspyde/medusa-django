@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome, {{ customer.first_name }} {{ customer.last_name }}</h1>
+    <p>Email: {{ customer.email }}</p>
+
+    <!-- Shipping Addresses -->
+    <h2>Shipping Addresses</h2>
+    <ul>
+        {% for address in customer.shipping_addresses %}
+        <li>
+            <strong>Address {{ forloop.counter }}:</strong><br>
+            {{ address.street }}<br>
+            {{ address.city }}, {{ address.state }} {{ address.zip_code }}<br>
+            {{ address.country }}
+        </li>
+        {% endfor %}
+    </ul>
+
+
+</div>
+{% endblock %}

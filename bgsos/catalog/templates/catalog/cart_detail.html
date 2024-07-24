@@ -1,6 +1,6 @@
-<!-- templates/catalog/cart_detail.html -->
 {% extends "base_generic.html" %}
 {% load custom_filters %}
+
 {% block title %}
 <title>Shopping Cart</title>
 {% endblock %}
@@ -8,52 +8,72 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">Shopping Cart</h1>
+
+    <!-- Error message display -->
+    {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
     {% if cart.items %}
-        <ul class="list-group mb-4">
-            {% for item in cart.items %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="media">
-                    <img src="{{ item.thumbnail }}" class="mr-3" alt="{{ item.title }}" style="width:50px;height:50px;">
-                    <div class="media-body">
-                        <h5 class="mt-0">{{ item.title }}</h5>
-                        <p>{{ item.quantity }} x {{ item.unit_price|cents_to_dollars|floatformat:2 }} AUD = {{ item.quantity|multiply:item.unit_price|cents_to_dollars|floatformat:2 }} AUD</p>
-                        <ul class="list-inline">
-                            {% for price in item.variant.prices %}
-                            <li class="list-inline-item">{{ price.currency_code|upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}</li>
-                            {% endfor %}
-                        </ul>
-                        <form action="{% url 'update_cart_item' item.id %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <div class="form-group mb-2">
-                                <label for="quantity-{{ item.id }}" class="sr-only">Quantity</label>
-                                <input type="number" class="form-control" id="quantity-{{ item.id }}" name="quantity" value="{{ item.quantity }}" min="1">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">Update item</button>
-                        </form>
-                    </div>
+    <ul class="list-group mb-4">
+        {% for item in cart.items %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="media">
+                <img src="{{ item.thumbnail }}" class="mr-3" alt="{{ item.title }}" style="width:50px;height:50px;">
+                <div class="media-body">
+                    <h5 class="mt-0">{{ item.title }}</h5>
+                    <p>{{ item.quantity }} x {{ item.unit_price|cents_to_dollars|floatformat:2 }} AUD =
+                        {{ item.quantity|multiply:item.unit_price|cents_to_dollars|floatformat:2 }} AUD</p>
+                    <ul class="list-inline">
+                        {% for price in item.variant.prices %}
+                        <li class="list-inline-item">{{ price.currency_code|upper }}:
+                            {{ price.amount|cents_to_dollars|floatformat:2 }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <form action="{% url 'update_cart_item' item.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <div class="form-group mb-2">
+                            <label for="quantity-{{ item.id }}" class="sr-only">Quantity</label>
+                            <input type="number" class="form-control" id="quantity-{{ item.id }}" name="quantity"
+                                   value="{{ item.quantity }}" min="1">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Update item</button>
+                    </form>
                 </div>
-                <form action="{% url 'remove_from_cart' item.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                </form>
-            </li>
-            {% endfor %}
-        </ul>
-        <div class="d-flex justify-content-between align-items-center">
-            <h4>Subtotal: {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4>
-            <h4>Total: {{ cart.total|cents_to_dollars|floatformat:2 }} AUD</h4>
-            <form action="" method="post" class="d-inline">
+            </div>
+            <form action="{% url 'remove_from_cart' item.id %}" method="post" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary mb-2">Update All Quantities</button>
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
             </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="d-flex justify-content-between align-items-center">
+        <h4>Subtotal: {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4>
+        <h4> Discount: {{ cart.discount_total|cents_to_dollars|floatformat:2 }} AUD</h4>
+        <h4>Total: {{ cart.total|cents_to_dollars|floatformat:2 }} AUD</h4>
+        <form action="" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mb-2">Update All Quantities</button>
+        </form>
+    </div>
+    <form action="{% url 'add_coupon_code' %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <div class="form-group mb-2">
+            <input type="text" name="coupon_code" placeholder="Enter coupon code" class="form-control"/>
+            <button type="submit" class="btn btn-primary btn-sm">Add Coupon</button>
         </div>
-        <div class="mt-4">
-            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Proceed to Checkout</a>
-        </div>
+    </form>
+    <div class="mt-4">
+        <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block">Proceed to Checkout</a>
+    </div>
     {% else %}
-        <div class="alert alert-info" role="alert">
-            Your cart is empty.
-        </div>
+    <div class="alert alert-info" role="alert">
+        Your cart is empty.
+    </div>
     {% endif %}
 </div>
 {% endblock %}
