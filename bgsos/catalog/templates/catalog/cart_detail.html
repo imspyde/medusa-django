@@ -24,7 +24,8 @@
                 <img src="{{ item.thumbnail }}" class="mr-3" alt="{{ item.title }}" style="width:50px;height:50px;">
                 <div class="media-body">
                     <h5 class="mt-0">{{ item.title }}</h5>
-                    <p>{{ item.quantity }} x {{ item.unit_price|cents_to_dollars|floatformat:2 }} AUD =
+                    <p>{{ item.variant.title }}</br>
+                    {{ item.quantity }} x {{ item.unit_price|cents_to_dollars|floatformat:2 }} AUD =
                         {{ item.quantity|multiply:item.unit_price|cents_to_dollars|floatformat:2 }} AUD</p>
                     <ul class="list-inline">
                         {% for price in item.variant.prices %}
@@ -52,9 +53,13 @@
         {% endfor %}
     </ul>
     <div class="d-flex justify-content-between align-items-center">
-        <h4>Subtotal: {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4></br>
-        <h4> Discount: {{ cart.discount_total|cents_to_dollars|floatformat:2 }} AUD</h4></br>
-        <h4>Total: {{ cart.total|cents_to_dollars|floatformat:2 }} AUD</h4>
+        <ul class="list-unstyled">
+            <li><h4><strong>Subtotal:</strong> {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4></li>
+            <li><h4><strong>Discount:</strong> {{ cart.discount_total|cents_to_dollars|floatformat:2 }} AUD</h4></li>
+            <li><h4><strong>Total:</strong> {{ cart.total|cents_to_dollars|floatformat:2 }} AUD</h4></li>
+        </ul>
+        
+        
         <form action="" method="post" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary mb-2">Update All Quantities</button>
