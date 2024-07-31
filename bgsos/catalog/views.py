@@ -127,6 +127,7 @@ def add_to_cart_view(request, variant_id, qty):
         return render(request, 'error.html', {'message': f'Failed to add item to cart: {str(e)}'})
 
 
+
 ##
 
 def create_cart_view(request):

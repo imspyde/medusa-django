@@ -48,19 +48,18 @@
 <div style="margin-left:20px;margin-top:20px">
     <h4>Variants</h4>
     {% for variant in product.variants %}
-    <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
-    <select id="variant" name="variant_id" class="form-control" required>
-        <option value="" disabled selected>Select a variant</option>
-        {% for variant in product.variants %}
-            <option value="{{ variant.id }}">
-                {{ variant.title }} - SKU: {{ variant.sku }} - Qty: {{ variant.inventory_quantity }}
+        <hr>
+        <p><strong>Title:</strong> {{ variant.title }}</p>
+        <p><strong>SKU:</strong> {{ variant.sku }}</p>
+        <p><strong>Inventory Quantity:</strong> {{ variant.inventory_quantity }}</p>
+        <p><strong>Prices:</strong>
+            <ul>
                 {% for price in variant.prices %}
-                    - {{ price.currency_code | upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}
+                    <li>{{ price.currency_code | upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}</li>
                 {% endfor %}
-            </option>
-        {% endfor %}
-    </select>
-        
+            </ul>
+        </p>
+        <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary">Add to Cart</button>
         </form>
