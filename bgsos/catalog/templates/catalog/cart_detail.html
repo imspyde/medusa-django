@@ -52,8 +52,8 @@
         {% endfor %}
     </ul>
     <div class="d-flex justify-content-between align-items-center">
-        <h4>Subtotal: {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4>
-        <h4> Discount: {{ cart.discount_total|cents_to_dollars|floatformat:2 }} AUD</h4>
+        <h4>Subtotal: {{ cart.subtotal|cents_to_dollars|floatformat:2 }} AUD</h4></br>
+        <h4> Discount: {{ cart.discount_total|cents_to_dollars|floatformat:2 }} AUD</h4></br>
         <h4>Total: {{ cart.total|cents_to_dollars|floatformat:2 }} AUD</h4>
         <form action="" method="post" class="d-inline">
             {% csrf_token %}

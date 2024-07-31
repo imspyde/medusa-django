@@ -10,11 +10,11 @@ backendUrl = settings.BACKEND_URL
 publishableApiKey = settings.PUBLISHABLE_API_KEY
 regionId = settings.REGION_ID
 
-# Setting up the SOCKS5 proxy
-# proxies = {
-#     'http': 'socks5h://127.0.0.1:9050',
-#     'https': 'socks5h://127.0.0.1:9050',
-# }
+#Setting up the SOCKS5 proxy
+proxies = {
+    'http': 'socks5h://127.0.0.1:9050',
+    'https': 'socks5h://127.0.0.1:9050',
+}
 
 # Creating a session and configuring it
 session = requests.Session()
@@ -37,7 +37,7 @@ session.mount('https://', adapter)
 session.headers.update({'x-publishable-api-key': publishableApiKey})
 
 
-# session.proxies.update(proxies)
+session.proxies.update(proxies)
 
 
 def create_cart():
