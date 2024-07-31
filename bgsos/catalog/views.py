@@ -84,7 +84,7 @@ def get_product_list():
 
 ##
 def product_list_view(request):
-    print('hello')
+
     response = browse_all_products()
     print(response.text)  # Print the raw response text for debugging
     if response.status_code == 200:
@@ -349,7 +349,7 @@ def checkout_view(request):
 
             if updated_shipping_details.status_code is 200:
                 #     create and select payment session
-                print('helloo')
+                
                 return redirect('shipping_methods')
 
             return redirect('shipping_methods')

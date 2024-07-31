@@ -4,7 +4,8 @@
 {% block content %}
 <div class="container">
     <h1>Welcome, {{ customer.first_name }} {{ customer.last_name }}</h1>
-    <p>Email: {{ customer.email }}</p>
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Your cart ID is:</strong> {{ request.session.cart_id }}</p>
     <h2>Loyalty Points</h2>
     Get Points and place here 
 

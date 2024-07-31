@@ -10,7 +10,8 @@ backendUrl = settings.BACKEND_URL
 publishableApiKey = settings.PUBLISHABLE_API_KEY
 regionId = settings.REGION_ID
 
-#Setting up the SOCKS5 proxy
+# Setting up the SOCKS5 proxy
+# Comment out to disable proxy
 proxies = {
     'http': 'socks5h://127.0.0.1:9050',
     'https': 'socks5h://127.0.0.1:9050',
@@ -36,7 +37,7 @@ session.mount('https://', adapter)
 # Setting default headers and proxy configuration
 session.headers.update({'x-publishable-api-key': publishableApiKey})
 
-
+# Comment out to disable proxy
 session.proxies.update(proxies)
 
 
