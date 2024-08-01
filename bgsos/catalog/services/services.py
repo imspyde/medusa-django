@@ -191,7 +191,7 @@ def get_current_customer(access_token):
 
 
 def create_payment(params):
-    print(btc_url)
+    print(f"{btc_url}/api/v1/stores/{btc_store_id}/invoices")
     url = f"{btc_url}/api/v1/stores/{btc_store_id}/invoices"
     headers = {
         "Authorization": f"token {btc_store_api}",
@@ -200,13 +200,14 @@ def create_payment(params):
     data = {
         "amount": params['amount'],
         "currency": params['currency'],
+        "metadata": params['metadata']
     }
     response = requests.post(url, headers=headers, json=data)
     return response
 
 
-def get_invoice_details(params, invoice_id):
-    url = f"{btc_url}/api/v1/stores/{params['store_id']}/invoices/{invoice_id}/payment-methods"
+def get_invoice_details(invoice_id):
+    url = f"{btc_url}/api/v1/stores/{btc_store_id}/invoices/{invoice_id}/payment-methods"
     headers = {
         "Authorization": f"token {btc_store_api}",
         "Content-Type": "application/json",

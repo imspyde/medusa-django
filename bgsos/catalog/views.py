@@ -368,7 +368,6 @@ def checkout_view(request):
 def show_btc_address(request):
     cart_id = request.session.get('cart_id')
     cart_details = get_cart_detail(cart_id)
-    print(cart_details)
     # create and select payment session
     created_payment_session = create_payment_session(cart_id)
 
@@ -380,10 +379,37 @@ def show_btc_address(request):
     if created_payment_session == 200:
         selected_payment_session = select_payment_session(cart_id, 'manual')
 
-    response = create_payment(params)
-    print(response.status_code)
+    # completes the cart
+    cart_complete = confirm_order(cart_id)
 
-    return redirect('show_payment_options')
+    params['metadata'] = {
+        'order_id': cart_complete.json().get('data').get('id')
+    }
+
+    response = create_payment(params)
+
+    address_response = get_invoice_details(response.json().get('id'))
+
+    btc_address = address_response.json()[0].get('destination')
+    btc_amount = address_response.json()[0].get('amount')
+
+    # Generate QR code
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(btc_address)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill='black', back_color='white')
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+
+    return render(request, 'catalog/show_btc_address.html',
+                  {'qr_code': img_str, 'usdt_address': btc_address, 'amount': btc_amount})
 
 
 def show_usdt_address(request):
@@ -410,6 +436,9 @@ def show_usdt_address(request):
     )
     conversion_rate = conversion_response.json().get('tether').get(currency_code)
 
+    # completes the cart
+    cart_complete = confirm_order(cart_id)
+
     # Calculate the equivalent amount in USDT (Tether)
     usdt_amount = round((cart_details.json().get('cart').get('total') / 100) / conversion_rate, 8)
 
@@ -427,6 +456,7 @@ def show_usdt_address(request):
             "order_description": cart_details.json().get('cart').get('email'),
             "is_fixed_rate": True,
             "is_fee_paid_by_user": False,
+            "order_id": cart_complete.json().get('order').get('id')
         }
     )
 
@@ -446,11 +476,6 @@ def show_usdt_address(request):
     buffered = BytesIO()
     img.save(buffered, format="PNG")
     img_str = base64.b64encode(buffered.getvalue()).decode()
-
-    # completes the cart
-    cart_complete = confirm_order(cart_id)
-
-    print('Cart Complete', cart_complete.json())
 
     request.session['cart_id'] = ''
 
