@@ -24,7 +24,13 @@ def divisibleby(value, divisor):
     except (ValueError, ZeroDivisionError, TypeError):
         return value
 
-
 @register.filter
 def format_float(value):
     return f"{value:.2f}"
+
+@register.filter
+def cents_to_points(value):
+    try:
+        return value / 10000
+    except (ValueError, TypeError):
+        return value

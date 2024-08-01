@@ -28,80 +28,70 @@
 </head>
 
 <body>
+    <nav class="site-header sticky-top py-1">
+        <div class="container d-flex flex-column flex-md-row justify-content-between">
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Online Store</a>
-    
-    <ul class="navbar-nav px-3 d-flex flex-row">
-        <li class="nav-item text-nowrap ms-4">
-            <a class="btn btn-outline-success my-2 my-sm-0" href="/catalog/customer/signin" role="button">Sign In</a>
-        </li>
-    </ul>
+
+    <a class="nav-item py-2 d-none d-md-inline-block" href="{% url 'index' %}">
+        <span data-feather="home"></span> Home <span class="sr-only">(current)</span></a>
+
+    <a class="nav-item py-2 d-none d-md-inline-block nav-link text-secondary" href="{% url 'product_list' %}">
+                <span data-feather="package"></span>
+                All Products
+            </a>
+
+
+            <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+                <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Online Store</a>
+                <a class="nav-link text-white-50 text-secondary" href="{% url 'index' %}">
+                    <span data-feather="home"></span> Home <span class="sr-only">(current)</span>
+                </a>
+                <a class="nav-link text-white-50 text-secondary" href="{% url 'product_list' %}">
+                    <span data-feather="package"></span>
+                    All Products
+                </a>
+                
+                <a class="nav-link text-white-50 text-secondary" href="{% url 'collections' %}">
+                        <span data-feather="shopping-bag"></span>
+                        Collections
+                    </a>
+            
+                        {% for collection in collections %}
+                            <a class="nav-link text-white-50 text-secondary" href="{% url 'collection_products' collection.id %}">
+                                <span data-feather="package"></span>
+                                {{ collection.title }}
+                            </a>
+
+                        {% endfor %}
+
+
+    <a class="nav-link text-white-50 text-secondary" href="{% url 'customer_orders' %}">
+        <span data-feather="list"></span>
+        Orders
+    </a>
+    <a class="nav-link text-white-50 text-secondary" href="{% url 'cart_detail' %}">
+            <span data-feather="shopping-cart"></span>
+            Cart
+        </a>
+
+        <a class="nav-link text-white-50 text-secondary" href="{% url 'customer_profile' %}">
+            <span data-feather="user"></span>
+            Profile 
+        </a>
+        <a class="nav-link text-white-50 text-secondary" href="{% url 'customer_logout' %}">
+            <span data-feather="log-out"></span>
+            Logout
+        </a>
+
+        <a class="btn btn-outline-success my-2 my-sm-0" href="/catalog/customer/signin" role="button">Sign In</a>
+</div>
+
 </nav>
-
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'index' %}">
-                            <span data-feather="home"></span>
-                            Home <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">
-                            <span data-feather="package"></span>
-                            All Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'collections' %}">
-                            <span data-feather="shopping-bag"></span>
-                            Collections
-                        </a>
-                        <ul class="nav flex-column ms-3">
-                            {% for collection in collections %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'collection_products' collection.id %}">
-                                    <span data-feather="package"></span>
-                                    * {{ collection.title }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'customer_orders' %}">
-                            <span data-feather="list"></span>
-                            Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'cart_detail' %}">
-                            <span data-feather="shopping-cart"></span>
-                            Cart
-                        </a>
-                    </li>
-                </ul>
-                <!-- New Profile and Logout Button -->
-                <ul class="nav flex-column profile-link">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'customer_profile' %}">
-                            <span data-feather="user"></span>
-                            Profile
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'customer_logout' %}">
-                            <span data-feather="log-out"></span>
-                            Logout
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+    <!-- Block for the page banner -->
+    {% block banner %}
+    {% endblock %}
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <!-- Main Content -->

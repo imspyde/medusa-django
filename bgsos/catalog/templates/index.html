@@ -4,18 +4,19 @@
 <title>Medusa Store Home</title>
 {% endblock %}
 
+{% block banner %}
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+      <h1 class="display-4 font-weight-normal">Banner headline</h1>
+      <p class="lead font-weight-normal">subheading</p>
+      <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+    </div>
+    <div class="product-device box-shadow d-none d-md-block"></div>
+    <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
+  </div>
+{% endblock %}
+
 {% block content %}
-<h1>Welcome to Medusa Store</h1>
-
-<p>Welcome to <em>Medusa Store</em>, your one-stop shop for all your needs. Browse through our wide range of products and collections, and enjoy a seamless shopping experience.</p>
-<p>Your cart ID is: {{ request.session.cart_id }}</p>
-<h2>About Us</h2>
-<p>Medusa Store offers a curated selection of high-quality products. Our mission is to provide the best shopping experience with a focus on customer satisfaction and product excellence.</p>
-
-<h2>Dynamic Content</h2>
-
-<p>You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.</p>
-
 <h2>Featured Products</h2>
 <div class="row">
     {% for product in featured_products %}
@@ -26,11 +27,24 @@
                 <h5 class="card-title">
                     <a href="{% url 'product_detail' product.id %}">{{ product.title }}</a>
                 </h5>
-                <p class="card-text">product.description</p>
+                <p class="card-text"></p>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+<a class="nav-link text-white-50 text-secondary" href="{% url 'collections' %}">
+    <span data-feather="shopping-bag"></span>
+    Collections
+</a>
+
+    {% for collection in collections %}
+        <a class="nav-link text-white-50 text-secondary" href="{% url 'collection_products' collection.id %}">
+            <span data-feather="package"></span>
+            {{ collection.title }}
+        </a>
+
+    {% endfor %}
 
 {% endblock %}

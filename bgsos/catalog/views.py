@@ -87,17 +87,14 @@ def get_product_list():
 ##
 def product_list_view(request):
 
-    print('hello', browse_all_products)
-
-
-
+    
     response = browse_all_products()
-    print('response', response)
+    ##print('response', response)
 
-    print(response.text)  # Print the raw response text for debugging
+    ##print(response.text)  # Print the raw response text for debugging
     if response.status_code == 200:
         products_data = response.json()
-        print(products_data)  # Print the parsed JSON response for debugging
+        #print(products_data)  # Print the parsed JSON response for debugging
         products = products_data.get('products', [])
         return render(request, 'catalog/product_list.html', {'products': products})
     else:
@@ -109,7 +106,7 @@ def product_detail_view(request, product_id):
     response = get_products(product_id=product_id)
     if response.status_code == 200:
         product = response.json().get('product')
-        print(product)
+        #print(product)
         return render(request, 'catalog/product_detail.html', {'product': product})
     else:
         return render(request, 'error.html', {'message': 'Failed to load product'})

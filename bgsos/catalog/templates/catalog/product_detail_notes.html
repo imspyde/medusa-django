@@ -16,25 +16,45 @@
 </html>
 
 
-<div style="margin-left:20px;margin-top:20px">
-    <h4>Variants</h4>
-    {% for variant in product.variants %}
-        <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
-            {% csrf_token %}
-            <label for="variant-select"><strong>Select Variant:</strong></label>
-            <select id="variant-select" name="variant_id" class="form-control">
-                {% for variant in product.variants %}
+<table>
+    <tbody>
+      {% for variant in product.variants %}
+        {% for price in variant.prices %}
+          {% if price.currency_code == 'aud' %}
+            <tr>
+              <td>{{ variant.title }}</td>
+              <td>{{ price.currency_code|upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}</td>
+              <td>
+                <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="variant.id" value="{{ variant.id }}">
+                  <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  
+
+
+<form id="add-to-cart-form" action="{% url 'add_to_cart' variant.id 1 %}" method="post">
+    {% csrf_token %}
+    <label for="variant-select">Choose a variant:</label>
+    <select id="variant-select" name="variant.id" required>
+        {% for variant in product.variants %}
+            {% for price in variant.prices %}
+                {% if price.currency_code == 'aud' %}
                     <option value="{{ variant.id }}">
-                        {{ variant.title }} - SKU: {{ variant.sku }} - Inventory: {{ variant.inventory_quantity }}
-                        {% for price in variant.prices %}
-                            - {{ price.currency_code | upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}
-                        {% endfor %}
+                        {{ variant.title }} - 
+                        {{ price.currency_code|upper }}: 
+                        {{ price.amount|cents_to_dollars|floatformat:2 }}
                     </option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Add to Cart</button>
-        </form>
-    {% else %}
-        <p>No variants available for this product.</p>
-    {% endfor %}
-</div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Add to Cart</button>
+</form>

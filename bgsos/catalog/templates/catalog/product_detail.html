@@ -14,34 +14,52 @@
       
     </div>
     <div class="col-md-6">
-        <h2>{{ product.title }}</h2>
-      <p>{{ product.description }}</p>
-      
+        
+        <div class="alert alert-primary" role="alert">
+          {% for variant in product.variants %}
+            {% for price in variant.prices %}
+              {% if forloop.parentloop.last and forloop.last %}
+                Earn up to + {{ price.amount|cents_to_points }} loyalty points
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        
+        </div>
+
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Variant Title</th>
+              <th>Price</th>
+              <th>Add to Cart</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for variant in product.variants %}
+              {% for price in variant.prices %}
+                {% if price.currency_code == 'aud' %}
+                  <tr>
+                    <td>{{ variant.title }}</td>
+                    <td>{{ price.currency_code|upper }}: ${{ price.amount|cents_to_dollars|floatformat:2 }}</td>
+                    <td>
+                      <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="variant.id" value="{{ variant.id }}">
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+        
     </div>
 </div>
-
-<div style="margin-left:20px;margin-top:20px">
-    <h4>Variants</h4>
-    {% for variant in product.variants %}
-        <hr>
-        <p><strong>Title:</strong> {{ variant.title }}</p>
-        <p><strong>SKU:</strong> {{ variant.sku }}</p>
-        <p><strong>Inventory Quantity:</strong> {{ variant.inventory_quantity }}</p>
-        <p><strong>Prices:</strong>
-            <ul>
-                {% for price in variant.prices %}
-                    <li>{{ price.currency_code | upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}</li>
-                {% endfor %}
-            </ul>
-        </p>
-        <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Add to Cart</button>
-        </form>
-    {% empty %}
-        <p>No variants available for this product.</p>
-    {% endfor %}
-</div>
+<h2>Description</h2>
+<hr>
+  <p>{{ product.description }}</p>
 {% endblock %}
 
 {% block sidebar %}

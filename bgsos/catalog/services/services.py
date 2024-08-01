@@ -111,9 +111,6 @@ def get_products(product_id=None, collection_id=None):
 
 
 def browse_all_products():
-    print('here')
-    print(backendUrl)
-    print(session.get)
     return session.get(f'{backendUrl}/store/products')
 
 
