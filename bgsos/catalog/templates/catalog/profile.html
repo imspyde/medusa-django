@@ -4,7 +4,61 @@
 {% block content %}
 <div class="container">
     <h1>Welcome, {{ customer.first_name }} {{ customer.last_name }}</h1>
-    <p>Email: {{ customer.email }}</p>
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Your cart ID is:</strong> {{ request.session.cart_id }}</p>
+
+
+    <h2>Loyalty Points</h2>
+    Get Points and place here 
+
+    <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Bronze</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">0 <small class="text-muted"></small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>Exclusive Discounts</li>
+              <li>Chat support</li>
+              <li>Help center access</li>
+            </ul>
+            
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Silver</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">1000<small class="text-muted"></small></h1>
+            <p>You need 600 more points to earn silver</p>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>Exclusive Discounts</li>
+              <li>Live chat support</li>
+              <li>Same day tracking number</li>
+
+            </ul>
+            
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">Gold</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">2000<small class="text-muted"></small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+                <li>Exclusive Discounts</li>
+                <li>Dedicated Account Manager</li>
+                <li>Same day tracking number</li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+  
+    <hr>
 
     <!-- Shipping Addresses -->
     <h2>Shipping Addresses</h2>

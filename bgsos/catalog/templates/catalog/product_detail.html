@@ -8,30 +8,17 @@
 
 {% block content %}
 <h1>{{ product.title }}</h1>
-
-<p><strong>Subtitle:</strong> {{ product.subtitle }}</p>
-<p><strong>Description:</strong> {{ product.description }}</p>
-<p><strong>Status:</strong> {{ product.status }}</p>
-<p><strong>Gift Card:</strong> {{ product.is_giftcard }}</p>
-<p><strong>Discountable:</strong> {{ product.discountable }}</p>
-<p><strong>Profile ID:</strong> {{ product.profile_id }}</p>
-<p><strong>Weight:</strong> {{ product.weight }}</p>
-<p><strong>Dimensions (LxWxH):</strong> {{ product.length }} x {{ product.width }} x {{ product.height }}</p>
-<p><strong>HS Code:</strong> {{ product.hs_code }}</p>
-<p><strong>Origin Country:</strong> {{ product.origin_country }}</p>
-<p><strong>MID Code:</strong> {{ product.mid_code }}</p>
-<p><strong>Material:</strong> {{ product.material }}</p>
-<p><strong>Collection:</strong> {{ product.collection.title }}</p>
-<p><strong>Created At:</strong> {{ product.created_at }}</p>
-<p><strong>Updated At:</strong> {{ product.updated_at }}</p>
-<p><strong>Deleted At:</strong> {{ product.deleted_at }}</p>
-<p><strong>Metadata:</strong>
-    <ul>
-        {% for key, value in product.metadata.items %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
-        {% endfor %}
-    </ul>
-</p>
+<div class="row">
+    <div class="col-md-4">
+      <img src="{{ product.thumbnail }}" class="card-img-top" alt="{{ product.title }}">
+      
+    </div>
+    <div class="col-md-6">
+        <h2>{{ product.title }}</h2>
+      <p>{{ product.description }}</p>
+      
+    </div>
+</div>
 
 <div style="margin-left:20px;margin-top:20px">
     <h4>Variants</h4>
