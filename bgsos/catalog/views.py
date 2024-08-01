@@ -86,7 +86,11 @@ def get_product_list():
 
 ##
 def product_list_view(request):
+
     print('hello', browse_all_products)
+
+
+
     response = browse_all_products()
     print('response', response)
 
@@ -355,7 +359,7 @@ def checkout_view(request):
             print('Test', updated_shipping_details.json())
             if updated_shipping_details.status_code == 200:
                 #     create and select payment session
-                print('helloo')
+                
                 return redirect('shipping_methods')
 
             return redirect('shipping_methods')
@@ -594,6 +598,10 @@ def customer_profile(request):
 
         if current_customer.status_code == 200:
             customer_data = current_customer.json().get('customer')
+    
+    # Storing the email in session
+            request.session['customer_data'] = customer_data
+
             return render(request, 'catalog/profile.html', {'customer': customer_data})
         else:
             # Handle API response errors or authentication failures
