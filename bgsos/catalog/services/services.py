@@ -9,8 +9,12 @@ from django.conf import settings  # Import settings from Django
 backendUrl = settings.BACKEND_URL
 publishableApiKey = settings.PUBLISHABLE_API_KEY
 regionId = settings.REGION_ID
+btc_url = settings.BTC_URL
+btc_store_id = settings.BTC_STORE_ID
+btc_store_api = settings.BTC_STORE_API
 
 # Setting up the SOCKS5 proxy
+# Comment out to disable proxy
 # proxies = {
 #     'http': 'socks5h://127.0.0.1:9050',
 #     'https': 'socks5h://127.0.0.1:9050',
@@ -37,6 +41,7 @@ session.mount('https://', adapter)
 session.headers.update({'x-publishable-api-key': publishableApiKey})
 
 
+# Comment out to disable proxy
 # session.proxies.update(proxies)
 
 
@@ -94,6 +99,9 @@ def get_products(product_id=None, collection_id=None):
 
 
 def browse_all_products():
+    print('here')
+    print(backendUrl)
+    print(session.get)
     return session.get(f'{backendUrl}/store/products')
 
 
@@ -111,7 +119,10 @@ def get_collection_name(id):
 
 
 def update_shipping_details(cart_id, data):
-    return session.post(f'{backendUrl}/store/carts/{cart_id}', json={
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    return session.post(f'{backendUrl}/store/carts/{cart_id}', headers=headers, json={
         "shipping_address": {
             "first_name": data.get('first_name'),
             "last_name": data.get('last_name'),
@@ -120,6 +131,7 @@ def update_shipping_details(cart_id, data):
             "city": data.get('city'),
             "province": data.get('state'),
             "postal_code": data.get('postal_code'),
+            "phone": data.get('phone'),
             "country_code": "au"
         },
         "billing_address": {
@@ -130,6 +142,7 @@ def update_shipping_details(cart_id, data):
             "city": data.get('city'),
             "province": data.get('state'),
             "postal_code": data.get('postal_code'),
+            "phone": data.get('phone'),
             "country_code": "au"
         },
         "email": data.get('email')
@@ -137,6 +150,7 @@ def update_shipping_details(cart_id, data):
 
 
 def confirm_order(cart_id):
+    print('CartId', cart_id)
     return session.post(f'{backendUrl}/store/carts/{cart_id}/complete')
 
 
@@ -174,6 +188,31 @@ def get_current_customer(access_token):
         'Authorization': f'Bearer {access_token}',
     }
     return session.get(f'{backendUrl}/store/auth', headers=headers)
+
+
+def create_payment(params):
+    print(btc_url)
+    url = f"{btc_url}/api/v1/stores/{btc_store_id}/invoices"
+    headers = {
+        "Authorization": f"token {btc_store_api}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "amount": params['amount'],
+        "currency": params['currency'],
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response
+
+
+def get_invoice_details(params, invoice_id):
+    url = f"{btc_url}/api/v1/stores/{params['store_id']}/invoices/{invoice_id}/payment-methods"
+    headers = {
+        "Authorization": f"token {btc_store_api}",
+        "Content-Type": "application/json",
+    }
+    response = requests.get(url, headers=headers)
+    return response
 
 
 def customer_login(email, password):
@@ -235,7 +274,9 @@ def change_customer_password(auth_token, new_password):
 
 
 def my_orders(auth_token, offset=0, limit=10):
+    print(auth_token)
     headers = {
         'Authorization': f'Bearer {auth_token}'
     }
+    print(f'{backendUrl}/store/customers/me/orders?offset={offset}&limit={limit}')
     return session.get(f'{backendUrl}/store/customers/me/orders?offset={offset}&limit={limit}', headers=headers)

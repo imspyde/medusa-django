@@ -35,7 +35,9 @@ from catalog.services.services import (
     login_jwt,
     get_customer_profile,
     change_customer_password,
-    my_orders
+    my_orders,
+    create_payment,
+    get_invoice_details
 )
 from .forms import SignUpForm, SignInForm, NewPasswordForm
 from django.contrib import messages
@@ -84,8 +86,10 @@ def get_product_list():
 
 ##
 def product_list_view(request):
-    print('hello')
+    print('hello', browse_all_products)
     response = browse_all_products()
+    print('response', response)
+
     print(response.text)  # Print the raw response text for debugging
     if response.status_code == 200:
         products_data = response.json()
@@ -165,9 +169,11 @@ def create_cart_view(request):
 
 def cart_detail_view(request):
     cart_id = request.session.get('cart_id')
+    print(cart_id)
     if not cart_id:
         # If there is no cart_id in the session, create one
         region_id = settings.REGION_ID
+        print(region_id)
         cart_response = create_cart()
 
         request.session['cart_id'] = cart_response['id']
@@ -346,8 +352,8 @@ def checkout_view(request):
 
         try:
             updated_shipping_details = update_shipping_details(cart_id, data)
-
-            if updated_shipping_details.status_code is 200:
+            print('Test', updated_shipping_details.json())
+            if updated_shipping_details.status_code == 200:
                 #     create and select payment session
                 print('helloo')
                 return redirect('shipping_methods')
@@ -358,17 +364,26 @@ def checkout_view(request):
     return render(request, 'catalog/checkout.html')
 
 
+# you have to work on this
 def show_btc_address(request):
     cart_id = request.session.get('cart_id')
-    cart_details = get_cart_detail(cart_id).json()
-
+    cart_details = get_cart_detail(cart_id)
+    print(cart_details)
     # create and select payment session
     created_payment_session = create_payment_session(cart_id)
+
+    params = {
+        'amount': cart_details.json().get('cart').get('total') / 100,
+        'currency': cart_details.json().get('cart').get('region').get('currency_code')
+    }
 
     if created_payment_session == 200:
         selected_payment_session = select_payment_session(cart_id, 'manual')
 
-    return redirect('show_usdt_address')
+    response = create_payment(params)
+    print(response.status_code)
+
+    return redirect('show_payment_options')
 
 
 def show_usdt_address(request):
@@ -434,6 +449,8 @@ def show_usdt_address(request):
 
     # completes the cart
     cart_complete = confirm_order(cart_id)
+
+    print('Cart Complete', cart_complete.json())
 
     request.session['cart_id'] = ''
 

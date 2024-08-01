@@ -45,5 +45,4 @@ urlpatterns = [
     path('customer/logout', views.customer_logout, name='customer_logout'),
     path('customer/change_password', views.change_password, name='change_customer_password'),
     path('customer/orders', views.customer_orders, name='customer_orders')
-
 ]
