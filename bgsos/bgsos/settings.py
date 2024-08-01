@@ -34,7 +34,9 @@ REGION_ID = os.getenv('REGION_ID')
 USDT_URL = os.getenv('USDT_URL')
 USDT_API_KEY = os.getenv('USDT_API_KEY')
 USDT_IPN = os.getenv('USDT_IPN')
-
+BTC_URL = os.getenv('BTC_URL')
+BTC_STORE_ID = os.getenv('BTC_STORE_ID')
+BTC_STORE_API = os.getenv('BTC_STORE_API')
 # Add your other settings here
 
 
