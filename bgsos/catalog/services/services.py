@@ -15,10 +15,17 @@ btc_store_api = settings.BTC_STORE_API
 
 # Setting up the SOCKS5 proxy
 # Comment out to disable proxy
+
 # proxies = {
 #     'http': 'socks5h://127.0.0.1:9050',
 #     'https': 'socks5h://127.0.0.1:9050',
 # }
+
+proxies = {
+    'http': 'socks5h://127.0.0.1:9050',
+    'https': 'socks5h://127.0.0.1:9050',
+}
+
 
 # Creating a session and configuring it
 session = requests.Session()
@@ -41,8 +48,13 @@ session.mount('https://', adapter)
 session.headers.update({'x-publishable-api-key': publishableApiKey})
 
 
+
 # Comment out to disable proxy
 # session.proxies.update(proxies)
+
+# Comment out to disable proxy
+session.proxies.update(proxies)
+
 
 
 def create_cart():

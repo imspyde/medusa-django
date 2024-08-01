@@ -1,0 +1,40 @@
+<!-- templates/product_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.title }}</title>
+</head>
+<body>
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.description }}</p>
+    <p>Price: {{ product.price }}</p>
+    <p>form action="{% url 'add_to_cart' cart_id=cart.id variant_id=product.variants.0.id qty=1 %}" method="post"</p>
+        {% csrf_token %}
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>
+
+
+<div style="margin-left:20px;margin-top:20px">
+    <h4>Variants</h4>
+    {% for variant in product.variants %}
+        <form action="{% url 'add_to_cart' variant.id 1 %}" method="post">
+            {% csrf_token %}
+            <label for="variant-select"><strong>Select Variant:</strong></label>
+            <select id="variant-select" name="variant_id" class="form-control">
+                {% for variant in product.variants %}
+                    <option value="{{ variant.id }}">
+                        {{ variant.title }} - SKU: {{ variant.sku }} - Inventory: {{ variant.inventory_quantity }}
+                        {% for price in variant.prices %}
+                            - {{ price.currency_code | upper }}: {{ price.amount|cents_to_dollars|floatformat:2 }}
+                        {% endfor %}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Add to Cart</button>
+        </form>
+    {% else %}
+        <p>No variants available for this product.</p>
+    {% endfor %}
+</div>
