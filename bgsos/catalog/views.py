@@ -552,6 +552,10 @@ def customer_profile(request):
 
         if current_customer.status_code == 200:
             customer_data = current_customer.json().get('customer')
+    
+    # Storing the email in session
+            request.session['customer_data'] = customer_data
+
             return render(request, 'catalog/profile.html', {'customer': customer_data})
         else:
             # Handle API response errors or authentication failures
